@@ -12,118 +12,15 @@ make install
 
 ## Sample binary
 ```cpp
-// a.hpp
-#ifndef A_HPP
-#define A_HPP
-
-#include <iostream>
-#include <fstream>
-
-char getByte(char *c);
-void writeByte(const std::string &str);
-std::string readByte();
-#endif
-```
-
-```cpp
-// a.cpp
-#include "a.hpp"
-
-char getByte(char *c)
-{
-	std::cout << c[0] << std::endl;
-	return c[0];
-}
-
-void writeByte(const std::string &str)
-{
-	std::ofstream file_wrtr;
-	file_wrtr.open("dump.log");
-	file_wrtr << str;
-	file_wrtr.close();
-}
-
-std::string readByte()
-{
-	std::string line;
-	std::ifstream file_rdr("dump.log");
-	if (file_rdr.is_open())
-	{
-		while (std::getline(file_rdr, line))
-		{
-			std::cout << line << '\n';
-		}
-		file_rdr.close();
-	}
-	return line;
-}
-```
-
-```cpp
-// main_test.cpp
-#include "a.hpp"
-#include "gtest/gtest.h"
-
-TEST(DummyTest, getByte)
-{
-	char c[1] = {'a'};
-	EXPECT_EQ('a', getByte(c));
-}
-
-TEST(DummyTest, readByte)
-{
-	std::string str = "Hello, world!";
-	writeByte(str);
-	EXPECT_EQ(str, readByte());
-}
-
-int main(int argc, char **argv)
-{
-	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
-}
-```
-
-```cpp
-// main.cpp
-#include "a.hpp"
-
-int main()
-{
-	char c[1] = {'a'};
-	std ::cout << getByte(c) << std::endl;
-	std::string str = "Hello, world!";
-	writeByte(str);
-	std::cout << readByte() << std::endl;
-	return 0;
-}
+a.hpp
+a.cpp
+main_test.cpp
+main.cpp
 ```
 
 ## CMake configuration
 ```cmake
-cmake_minimum_required(VERSION 3.15.0)
-project(Test VERSION 0.1.0)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-set(FILES_TO_TEST a.cpp)
-set(UNIT_TESTS main_test.cpp)
-set(MAIN_FILE main.cpp)
-
-add_subdirectory(googletest/)
-include_directories(googletest/include)
-add_library(files_to_test ${FILES_TO_TEST})
-
-enable_testing()
-add_executable(main ${MAIN_FILE})
-target_link_libraries(main files_to_test)
-
-add_executable(unit_test ${UNIT_TESTS})
-target_link_libraries(unit_test gtest gtest_main rt pthread files_to_test)
-
-include(GoogleTest)
-gtest_discover_tests(unit_test)
+CMakeFiles.txt
 ```
 
 Run using  `ctest` or `./unit_test`
