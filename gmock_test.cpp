@@ -17,6 +17,10 @@ TEST(FooBarMock, CanReadFile)
 {
 	std::shared_ptr<FooBar>foo(new FooBarMock);
 	EXPECT_CALL(*std::static_pointer_cast<FooBarMock>(foo), readByte()).Times(AtLeast(1));
+	EXPECT_CALL(*std::static_pointer_cast<FooBarMock>(foo), writeByte).Times(AtLeast(1));
+	EXPECT_CALL(*std::static_pointer_cast<FooBarMock>(foo), getByte).Times(AtLeast(1));
 	ReaderWriter rw(foo.get());
 	rw.operation();
+	foo->FooBar::writeByte("Hello, world!");
+	EXPECT_EQ("Hello, world!", foo->FooBar::readByte());
 }
